@@ -14,9 +14,8 @@ async function fetchArtworks(page = 1, artist = "", sortBy = "relevance") {
       </div>
     `;
 
-    // Updated to use the Netlify function URL
     const response = await fetch(
-      `/.netlify/functions/artworks?page=${page}&pageSize=${pageSize}&artist=${encodeURIComponent(
+      `/api/artworks?page=${page}&pageSize=${pageSize}&artist=${encodeURIComponent(
         artist
       )}&sortBy=${sortBy}`
     );
@@ -63,7 +62,6 @@ async function fetchArtworks(page = 1, artist = "", sortBy = "relevance") {
   }
 }
 
-// The rest of the code remains unchanged
 function displayArtworks(artworks) {
   const container = document.getElementById("artworks-container");
   if (!container) return;
@@ -87,7 +85,6 @@ function displayArtworks(artworks) {
   container.innerHTML = "";
 
   artworks.forEach((artwork) => {
-    // Determine museum source
     const isRijks = artwork.objectNumber !== undefined;
     const museumName = isRijks ? "Rijksmuseum" : "Harvard Art Museums";
     const museumClass = isRijks ? "bg-primary" : "bg-info";
@@ -95,7 +92,6 @@ function displayArtworks(artworks) {
     const artworkElement = document.createElement("div");
     artworkElement.className = "artwork col-sm-6 col-md-4 col-lg-3 mb-4";
 
-    // Safely stringify artwork for the onclick function
     const safeArtwork = JSON.stringify(artwork)
       .replace(/'/g, "\\'")
       .replace(/"/g, '\\"');
@@ -113,7 +109,7 @@ function displayArtworks(artworks) {
           <img src="${
             artwork.webImage?.url ||
             artwork.primaryimageurl ||
-            "https://via.placeholder.com/300x300?text=No+Image"
+            "https://placehold.co/300x300?text=No+Image"
           }" 
             alt="${artwork.title || "Untitled"}" 
             class="card-img-top">
@@ -134,10 +130,8 @@ function displayArtworks(artworks) {
     container.appendChild(artworkElement);
   });
 
-  // Update pagination status
   document.getElementById("page-info").textContent = `Page ${currentPage}`;
 
-  // Scroll to top of artworks section
   document
     .querySelector(".card-header h4 i.fa-image")
     .closest(".card")
@@ -155,12 +149,10 @@ function resetSearch() {
 }
 
 function saveToExhibition(artwork) {
-  // First check if we have exhibitions or create a select dropdown
   const exhibitionSelector = document.getElementById("exhibition-selector");
 
   const modal = new bootstrap.Modal(document.getElementById("exhibitionModal"));
 
-  // Populate exhibition dropdown
   exhibitionSelector.innerHTML = "";
 
   if (exhibitions.length === 0) {
@@ -175,10 +167,8 @@ function saveToExhibition(artwork) {
     });
   }
 
-  // Show the modal
   modal.show();
 
-  // Store the artwork in a data attribute to use later
   document
     .getElementById("current-artwork")
     .setAttribute("data-artwork", JSON.stringify(artwork));
@@ -196,7 +186,6 @@ function createOrAddToExhibition() {
   const artwork = JSON.parse(artworkData);
   let exhibitionName;
 
-  // Check if we're creating a new exhibition or using an existing one
   if (newExhibitionInput.value.trim()) {
     exhibitionName = newExhibitionInput.value.trim();
   } else {
@@ -208,7 +197,6 @@ function createOrAddToExhibition() {
     return;
   }
 
-  // Now add to the exhibition
   let exhibition = exhibitions.find((e) => e.name === exhibitionName);
   if (!exhibition) {
     exhibition = { name: exhibitionName, items: [] };
@@ -354,7 +342,7 @@ function displayExhibitions() {
             <img src="${
               item.webImage?.url ||
               item.primaryimageurl ||
-              "https://via.placeholder.com/100x100?text=No+Image"
+              "https://placehold.co/100x100?text=No+Image"
             }" 
               alt="${item.title || "Untitled"}" 
               class="card-img-top" style="height: 120px; object-fit: cover;">
@@ -405,7 +393,6 @@ function deleteExhibition(exhibitionName) {
     displayExhibitions();
     saveExhibitionsToLocalStorage();
 
-    // Show confirmation
     const toast = new bootstrap.Toast(document.getElementById("saveToast"));
     document.getElementById(
       "toastBody"
@@ -453,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document
-    .getElementById("search-button")
+    .getElementById("filter-button")
     .addEventListener("click", function () {
       currentPage = 1;
       fetchArtworks(
@@ -462,4 +449,8 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("sort-by").value
       );
     });
+
+  document
+    .getElementById("save-exhibition-button")
+    .addEventListener("click", createOrAddToExhibition);
 });
