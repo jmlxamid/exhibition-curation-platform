@@ -14,8 +14,9 @@ async function fetchArtworks(page = 1, artist = "", sortBy = "relevance") {
       </div>
     `;
 
+    // Updated to use the Netlify function URL
     const response = await fetch(
-      `/api/artworks?page=${page}&pageSize=${pageSize}&artist=${encodeURIComponent(
+      `/.netlify/functions/artworks?page=${page}&pageSize=${pageSize}&artist=${encodeURIComponent(
         artist
       )}&sortBy=${sortBy}`
     );
@@ -62,6 +63,7 @@ async function fetchArtworks(page = 1, artist = "", sortBy = "relevance") {
   }
 }
 
+// The rest of the code remains unchanged
 function displayArtworks(artworks) {
   const container = document.getElementById("artworks-container");
   if (!container) return;
