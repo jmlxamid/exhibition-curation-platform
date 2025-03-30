@@ -15,7 +15,8 @@ Welcome to my Exhibition Curation Platform! This web application allows art enth
 
 I created this platform to bridge the gap between museum collections and personal curation, bringing the joy of exhibition design to everyone regardless of physical location or access to art institutions.
 
-![Platform Screenshot](/screenshots/main-view.jpg)
+Link: https://gorgeous-platypus-fdb30d.netlify.app
+![Platform Screenshot] : /Users/AX/exhibition-curation-platform/Screenshot 2025-03-30 at 22.51.35.png
 
 ## Technologies Used
 
