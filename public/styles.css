@@ -1,4 +1,4 @@
-root {
+:root {
   --primary-color: #1e3a8a;
   --secondary-color: #475569;
   --accent-color: #0ea5e9;
@@ -30,8 +30,8 @@ h6 {
       rgba(13, 51, 107, 0.9),
       rgba(30, 58, 138, 0.8)
     ),
-    url("https://via.placeholder.com/1600x800?text=Museum+Collection") no-repeat
-      center center/cover;
+    url("https://placehold.co/1600x800?text=Museum+Collection") no-repeat center
+      center/cover;
   color: white;
   padding: 4rem 0;
   margin-bottom: 2rem;
@@ -79,10 +79,16 @@ h6 {
   height: 100%;
 }
 
+.artwork-img-container {
+  height: 220px;
+  overflow: hidden;
+}
+
 .artwork img {
   transition: transform 0.5s ease;
-  height: 220px;
+  height: 100%;
   object-fit: cover;
+  width: 100%;
 }
 
 .artwork:hover img {
@@ -208,4 +214,59 @@ footer {
   font-size: 3rem;
   margin-bottom: 1rem;
   color: #cbd5e1;
+}
+
+/* Text truncation */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.card-title {
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  height: 2.6rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+/* Image error handling styles */
+.img-error {
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 0.8rem;
+  height: 100%;
+  min-height: 120px;
+  text-align: center;
+  padding: 1rem;
+}
+
+.img-error::before {
+  content: "Image Unavailable";
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .artwork {
+    margin-bottom: 1.5rem;
+  }
+
+  .artwork-img-container {
+    height: 180px;
+  }
 }

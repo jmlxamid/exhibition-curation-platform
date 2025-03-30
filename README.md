@@ -1,109 +1,65 @@
-# Exhibition Curation Platform
+# 🎨 Exhibition Curation Platform
 
-A web application that allows users to explore and curate virtual exhibitions from combined collections of antiquities and fine art from the Rijksmuseum and Harvard Art Museums.
+## Contents
 
-## Features
+- [Introduction](#introduction)
+- [Technologies Used](#technologies-used)
+- [Setup & Installation](#setup--installation)
+- [How to Use](#how-to-use)
+- [Future Enhancements](#future-enhancements)
+- [About Me](#about-me)
 
-- Search and browse artworks from multiple museum collections
-- Filter by artist name and sort results
-- Pagination navigation to browse through large collections
-- View artwork details including images and artist information
-- Create and manage multiple personal exhibitions
-- Save artworks to exhibitions and remove them as needed
-- Persistent storage of exhibitions using browser localStorage
+## Introduction
+
+Welcome to my Exhibition Curation Platform! This web application allows art enthusiasts to create personalized virtual exhibitions by exploring and curating artworks from world-renowned collections including the Rijksmuseum and Harvard Art Museums.
+
+I created this platform to bridge the gap between museum collections and personal curation, bringing the joy of exhibition design to everyone regardless of physical location or access to art institutions.
+
+![Platform Screenshot](/screenshots/main-view.jpg)
 
 ## Technologies Used
 
-- Frontend: HTML, CSS, JavaScript, Bootstrap 5
-- Backend: Node.js, Express
-- APIs: Rijksmuseum API, Harvard Art Museums API
-- Deployment: [Your hosting platform here, e.g., Netlify, Heroku, GitHub Pages]
+- HTML5, CSS3, JavaScript (ES6+)
+- Bootstrap 5 for responsive layout
+- Font Awesome for iconography
+- Fetch API for asynchronous data retrieval
+- Local Storage API for client-side data persistence
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or later)
-- npm (comes with Node.js)
-- API keys for:
-  - [Rijksmuseum API](https://www.rijksmuseum.nl/en/research/conduct-research/data)
-  - [Harvard Art Museums API](https://harvardartmuseums.org/collections/api)
-
-### Installation
+## Setup & Installation
 
 1. Clone the repository:
-
-   ```
+   ```bash
    git clone https://github.com/yourusername/exhibition-curation-platform.git
+   ```
+2. Navigate to the project directory:
+   ```bash
    cd exhibition-curation-platform
    ```
-
-2. Install dependencies:
-
-   ```
-   npm install
+3. Open index.html in your browser or use a local server:
+   ```bash
+   npx serve # if you have Node.js installed
    ```
 
-3. Create a `.env` file in the root directory with your API keys:
+## How to Use
 
-   ```
-   RIJKSMUSEUM_API_KEY=your_rijksmuseum_api_key
-   HARVARD_ART_MUSEUMS_API_KEY=your_harvard_art_museums_api_key
-   ```
+1. **Browse Artworks**: Scroll through the collection or use the search functionality
+2. **Filter Results**: Enter an artist name and select a sorting method
+3. **Create Exhibitions**: Click "Add to Exhibition" on any artwork
+4. **Manage Collections**: View, organize, and delete your exhibitions from the dashboard
+5. **Share Your Vision**: Take screenshots or share the link to your curated exhibitions
 
-4. Start the development server:
+## Future Enhancements
 
-   ```
-   npm run dev
-   ```
+- User accounts for cloud storage of exhibitions
+- Social sharing capabilities
+- Advanced filtering by period, medium, or theme
+- Custom exhibition descriptions and layouts
+- Virtual exhibition walkthrough mode
 
-5. Open your browser and navigate to `http://localhost:5000`
+## About Me
 
-## Deployment
+I'm a passionate developer and art enthusiast with a background in web development as a student at Northcoders. This project combines my love for clean, functional code with my appreciation for art history and curation.
 
-This project can be deployed to any static hosting service. Here's how to deploy to Netlify:
+## Feel free to connect with me on [GitHub](https://github.com/jmlxamid).
 
-1. Create a `netlify.toml` file in the root directory:
-
-   ```
-   [build]
-     command = "npm run build"
-     publish = "public"
-
-   [functions]
-     directory = "functions"
-   ```
-
-2. Create a `functions` directory and move your API calls to serverless functions.
-
-3. Connect your GitHub repository to Netlify and follow the deployment instructions.
-
-## Usage
-
-1. **Searching for Artworks**:
-
-   - Enter an artist name in the search box
-   - Select a sorting method (relevance, artist, or date)
-   - Click "Apply Filters" button
-
-2. **Browsing Artworks**:
-
-   - Use the "Previous" and "Next" buttons to navigate through pages
-   - View artwork details including image, title, and artist
-
-3. **Creating Exhibitions**:
-
-   - Click "Save to Exhibition" on any artwork
-   - Create a new exhibition or select an existing one
-   - View all your exhibitions at the bottom of the page
-
-4. **Managing Exhibitions**:
-   - Remove individual artworks from exhibitions
-   - Delete entire exhibitions
-
-## License
-
-## Acknowledgments
-
-- [Rijksmuseum API](https://data.rijksmuseum.nl/)
-- [Harvard Art Museums API](https://github.com/harvardartmuseums/api-docs)
+Made with ❤️ by Abdi

@@ -2,6 +2,23 @@ let currentPage = 1;
 const pageSize = 10;
 let exhibitions = [];
 
+// Global error handler for images
+document.addEventListener(
+  "error",
+  function (e) {
+    if (e.target.tagName.toLowerCase() === "img") {
+      e.target.style.display = "none";
+    }
+  },
+  true
+);
+
+function truncateText(text, maxLength = 50) {
+  return text && text.length > maxLength
+    ? text.substring(0, maxLength) + "..."
+    : text || "Untitled";
+}
+
 async function fetchArtworks(page = 1, artist = "", sortBy = "relevance") {
   try {
     const container = document.getElementById("artworks-container");
@@ -92,9 +109,13 @@ function displayArtworks(artworks) {
     const artworkElement = document.createElement("div");
     artworkElement.className = "artwork col-sm-6 col-md-4 col-lg-3 mb-4";
 
-    const safeArtwork = JSON.stringify(artwork)
-      .replace(/'/g, "\\'")
-      .replace(/"/g, '\\"');
+    // Store artwork data as a data attribute instead of trying to pass it directly to the function
+    const artworkId = `artwork-${Date.now()}-${Math.floor(
+      Math.random() * 10000
+    )}`;
+
+    // Store the artwork data in a dedicated object that can be accessed globally
+    window[artworkId] = artwork;
 
     const artistName =
       artwork.principalOrFirstMaker ||
@@ -102,25 +123,33 @@ function displayArtworks(artworks) {
         ? artwork.people[0].name
         : "Unknown Artist");
 
+    const fallbackImage = "https://placehold.co/300x300?text=No+Image";
+    const safeImageUrl =
+      artwork.webImage?.url || artwork.primaryimageurl || fallbackImage;
+
+    // Ensure consistent card heights by using truncated text for title and description
+    const truncatedTitle = truncateText(artwork.title, 60);
+    const truncatedArtist = truncateText(artistName, 40);
+
     artworkElement.innerHTML = `
       <div class="card h-100 position-relative">
         <span class="badge ${museumClass} museum-tag">${museumName}</span>
-        <div class="position-relative overflow-hidden">
-          <img src="${
-            artwork.webImage?.url ||
-            artwork.primaryimageurl ||
-            "https://placehold.co/300x300?text=No+Image"
-          }" 
-            alt="${artwork.title || "Untitled"}" 
-            class="card-img-top">
+        <div class="position-relative overflow-hidden artwork-img-container">
+          <img src="${safeImageUrl}" 
+            alt="${truncatedTitle}" 
+            class="card-img-top" 
+            onerror="this.onerror=null; this.src='${fallbackImage}'; this.classList.add('img-error');"
+          >
         </div>
         <div class="card-body d-flex flex-column">
-          <h5 class="card-title">${artwork.title || "Untitled"}</h5>
-          <p class="card-text artwork-artist">
-            <i class="fas fa-user-paintbrush me-1"></i> ${artistName}
+          <h5 class="card-title text-truncate" title="${
+            artwork.title || "Untitled"
+          }">${truncatedTitle}</h5>
+          <p class="card-text artwork-artist text-truncate" title="${artistName}">
+            <i class="fas fa-user-paintbrush me-1"></i> ${truncatedArtist}
           </p>
           <div class="artwork-card-actions mt-auto">
-            <button class="btn btn-primary btn-sm" onclick='saveToExhibition(${safeArtwork})'>
+            <button class="btn btn-primary btn-sm" onclick="saveToExhibition('${artworkId}')">
               <i class="fas fa-bookmark me-1"></i> Add to Exhibition
             </button>
           </div>
@@ -148,9 +177,15 @@ function resetSearch() {
   fetchArtworks(currentPage);
 }
 
-function saveToExhibition(artwork) {
-  const exhibitionSelector = document.getElementById("exhibition-selector");
+function saveToExhibition(artworkId) {
+  // Get the artwork data from the global object
+  const artwork = window[artworkId];
+  if (!artwork) {
+    console.error("Artwork data not found");
+    return;
+  }
 
+  const exhibitionSelector = document.getElementById("exhibition-selector");
   const modal = new bootstrap.Modal(document.getElementById("exhibitionModal"));
 
   exhibitionSelector.innerHTML = "";
@@ -167,23 +202,33 @@ function saveToExhibition(artwork) {
     });
   }
 
-  modal.show();
-
+  // Store the artwork ID to retrieve it later when saving
   document
     .getElementById("current-artwork")
-    .setAttribute("data-artwork", JSON.stringify(artwork));
+    .setAttribute("data-artwork-id", artworkId);
+
+  modal.show();
 }
 
 function createOrAddToExhibition() {
   const exhibitionSelector = document.getElementById("exhibition-selector");
   const newExhibitionInput = document.getElementById("new-exhibition");
-  const artworkData = document
+  const artworkId = document
     .getElementById("current-artwork")
-    .getAttribute("data-artwork");
+    .getAttribute("data-artwork-id");
 
-  if (!artworkData) return;
+  if (!artworkId) {
+    console.error("No artwork ID found");
+    return;
+  }
 
-  const artwork = JSON.parse(artworkData);
+  // Get the artwork data from the global object
+  const artwork = window[artworkId];
+  if (!artwork) {
+    console.error("Artwork data not found");
+    return;
+  }
+
   let exhibitionName;
 
   if (newExhibitionInput.value.trim()) {
@@ -299,9 +344,9 @@ function displayExhibitions() {
            aria-labelledby="${headerId}" data-bs-parent="#exhibitions-list">
         <div class="accordion-body">
           <div class="d-flex justify-content-end mb-3">
-            <button class="btn btn-danger btn-sm" onclick='deleteExhibition("${
+            <button class="btn btn-danger btn-sm" onclick="deleteExhibition('${
               exhibition.name
-            }")'>
+            }')">
               <i class="fas fa-trash-alt me-1"></i> Delete Exhibition
             </button>
           </div>
@@ -336,23 +381,29 @@ function displayExhibitions() {
             ? item.people[0].name
             : "Unknown Artist");
 
+        const fallbackImage = "https://placehold.co/100x100?text=No+Image";
+        const safeImageUrl =
+          item.webImage?.url || item.primaryimageurl || fallbackImage;
+        const truncatedTitle = truncateText(item.title, 30);
+
         itemElement.innerHTML = `
           <div class="card h-100 position-relative">
             <span class="badge ${museumClass} museum-tag">${museumName}</span>
-            <img src="${
-              item.webImage?.url ||
-              item.primaryimageurl ||
-              "https://placehold.co/100x100?text=No+Image"
-            }" 
-              alt="${item.title || "Untitled"}" 
-              class="card-img-top" style="height: 120px; object-fit: cover;">
+            <img src="${safeImageUrl}" 
+              alt="${truncatedTitle}" 
+              class="card-img-top" 
+              style="height: 120px; object-fit: cover;" 
+              onerror="this.onerror=null; this.src='${fallbackImage}'; this.classList.add('img-error');"
+            >
             <div class="card-body">
-              <h6 class="card-title">${item.title || "Untitled"}</h6>
-              <p class="card-text small artwork-artist">${artistName}</p>
+              <h6 class="card-title text-truncate" title="${
+                item.title || "Untitled"
+              }">${truncatedTitle}</h6>
+              <p class="card-text small artwork-artist text-truncate" title="${artistName}">${artistName}</p>
               <button class="btn btn-danger btn-sm w-100" 
-                onclick='removeFromExhibition("${exhibition.name}", "${
+                onclick="removeFromExhibition('${exhibition.name}', '${
           item.id || item.objectNumber
-        }")'>
+        }')">
                 <i class="fas fa-times me-1"></i>Remove
               </button>
             </div>
